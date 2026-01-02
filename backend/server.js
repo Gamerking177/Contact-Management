@@ -1,28 +1,28 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
+
 const connectDB = require('./config/db.config');
 const contactRoutes = require('./routes/contact.route');
 
-// Connect to MongoDB
-connectDB();
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+
+// Connect DB (cached)
+connectDB();
 
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'http://localhost:8080'
+    'http://localhost:8080',
   ],
   methods: ['GET', 'POST', 'DELETE'],
 }));
 
 app.use(express.json());
 
-//Routes
+// Routes
 app.use('/api/contacts', contactRoutes);
+
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'UP',
@@ -31,7 +31,5 @@ app.get('/health', (req, res) => {
   });
 });
 
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// ❌ DO NOT use app.listen on Vercel
+module.exports = app;
