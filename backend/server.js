@@ -1,0 +1,22 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+const connectDB = require('./config/db.config');
+const contactRoutes = require('./routes/contact.route');
+
+// Connect to MongoDB
+connectDB();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+//Routes
+app.use('/api/contacts', contactRoutes);
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
