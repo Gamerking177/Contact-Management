@@ -20,6 +20,14 @@ app.use(express.json());
 
 //Routes
 app.use('/api/contacts', contactRoutes);
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'UP',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
