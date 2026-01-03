@@ -1,73 +1,101 @@
-# Welcome to your Lovable project
+# Contact Management — Frontend
 
-## Project info
+React + Vite + TypeScript frontend for the Contact Management app.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Prerequisites
 
-## How can I edit this code?
+- **Node.js** 18+ and npm
+- Running backend API (Express/MongoDB) on `http://localhost:3000` by default. See `backend/`.
 
-There are several ways of editing your application.
+## Quick start
 
-**Use Lovable**
+```bash
+# from repository root (recommended open two terminals)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+# 1) Backend
+cd backend
 npm i
+npm run dev # starts on http://localhost:3000
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# 2) Frontend
+cd frontend
+npm i
+cp .env.example .env # then set VITE_API_BASE_URL
+npm run dev # opens on http://localhost:8080
 ```
 
-**Edit a file directly in GitHub**
+## Environment variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Copy `.env.example` to `.env` and set:
 
-**Use GitHub Codespaces**
+```env
+VITE_API_BASE_URL=http://localhost:3000
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Used in `src/services/api.ts` as the Axios `baseURL` (trailing slashes trimmed).
 
-## What technologies are used for this project?
+## Scripts
 
-This project is built with:
+Defined in `package.json`:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **dev**: `vite` (serves on port `8080`, see `vite.config.ts`)
+- **build**: `vite build`
+- **build:dev**: `vite build --mode development`
+- **preview**: `vite preview`
+- **lint**: `eslint .`
 
-## How can I deploy this project?
+## Tech stack
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- **React 18**, **TypeScript**, **Vite**
+- **Tailwind CSS** + `tailwindcss-animate`
+- **shadcn/ui** (via Radix primitives)
+- **React Router** for routing
+- **@tanstack/react-query** for caching/mutations
+- **Axios** for HTTP
+- **react-toastify** for toasts
 
-## Can I connect a custom domain to my Lovable project?
+## App structure (frontend)
 
-Yes, you can!
+- `src/App.tsx`: Router, providers (`QueryClientProvider`, tooltips), global toasts
+- `src/pages/Index.tsx`: Main page that loads and shows contacts
+- `src/components/ContactForm.tsx`: Create contact with client-side validation
+- `src/components/ContactList.tsx`: List + delete contacts (table/cards)
+- `src/services/api.ts`: Axios instance using `VITE_API_BASE_URL`
+- `src/services/contactService.ts`: API calls: `getContacts()`, `createContact()`, `deleteContact()`
+- `src/types/…` and `src/utils/…`: Types and validation helpers
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Features
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- **Create contact** with fields: name, email, phone, optional message
+- **List contacts** (newest first), responsive table/card UI
+- **Delete contact** with optimistic UI via React Query
+- **Validation** with user feedback, success/error toasts
+
+## API usage (from frontend)
+
+Base URL comes from `VITE_API_BASE_URL`. Endpoints used by `src/services/contactService.ts`:
+
+- `GET /api/contacts` → list contacts
+- `POST /api/contacts` → create contact `{ name, email, phone, message? }`
+- `DELETE /api/contacts/:id` → delete by id
+
+The backend mounts these under `/api/contacts` in `backend/server.js` via `backend/routes/contact.route.js`.
+
+## Running with backend
+
+- Backend accepts CORS from `http://localhost:5173` and `http://localhost:8080` (`backend/server.js`).
+- Ensure MongoDB is reachable and `MONGODB_URI` is set in `backend/.env` (see `backend/config/db.config.js`).
+- Start backend first, then start frontend with `VITE_API_BASE_URL` pointing to it.
+
+## Build & preview
+
+```bash
+npm run build
+npm run preview
+```
+
+## Development notes
+
+- Path alias `@` → `src/` configured in `vite.config.ts` and `tsconfig.json`.
+- Dev server runs on port `8080` (overridden in `vite.config.ts`).
+
