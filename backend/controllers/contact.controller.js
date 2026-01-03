@@ -1,5 +1,4 @@
-const Contact = require("../model/contact.model");
-
+const Contact = require("../model/contact.model.js");
 
 // Get all contacts (sorted by newest first)
 exports.getContacts = async (req, res) => {
