@@ -14,6 +14,7 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:8080',
+    'https://contact-management-rust.vercel.app'
   ],
   methods: ['GET', 'POST', 'DELETE'],
 }));
