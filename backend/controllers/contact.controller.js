@@ -1,15 +1,17 @@
-const Contact = require("../model/contact.model");
+const Contact = require("../model/contact.model.js");
 
 
 // Get all contacts (sorted by newest first)
 exports.getContacts = async (req, res) => {
   try {
-    const contacts = await contactModel.find().sort({ createdAt: -1 });
-    res.json(contacts);
+    const contacts = await Contact.find().sort({ createdAt: -1 });
+    res.status(200).json(contacts);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error("GET contacts error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // Create a new contact
 exports.createContact = async (req, res) => {
