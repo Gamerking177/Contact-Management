@@ -17,9 +17,10 @@ import { deleteContact as deleteContactApi } from "@/services/contactService";
 interface ContactListProps {
   contacts: Contact[];
   isLoading: boolean;
+  onContactDeleted?: () => void;
 }
 
-const ContactList = ({ contacts, isLoading }: ContactListProps) => {
+const ContactList = ({ contacts, isLoading, onContactDeleted }: ContactListProps) => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
@@ -38,6 +39,9 @@ const ContactList = ({ contacts, isLoading }: ContactListProps) => {
       if (context?.previous) {
         queryClient.setQueryData(["contacts"], context.previous);
       }
+    },
+    onSuccess: () => {
+      if (onContactDeleted) onContactDeleted();
     },
     onSettled: () => {
       setDeletingId(null);
